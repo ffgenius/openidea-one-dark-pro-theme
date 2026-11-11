@@ -1,0 +1,28 @@
+id = "one-dark-pro-theme"
+name = "One Dark Pro"
+version = "0.0.1"
+description = "Unofficial OpenIDEA port of Binaryify's One Dark Pro theme."
+authors = ["ffgenius", "Binaryify"]
+license = "MIT"
+icon = "icon.svg"
+engines.openidea = "^1.2"
+
+[[contributes.themes]]
+path = "themes/one-dark-pro.theme.json"
+editor-scheme = "themes/one-dark-pro.scheme.json"
+
+[[contributes.themes]]
+path = "themes/one-dark-pro-flat.theme.json"
+editor-scheme = "themes/one-dark-pro-flat.scheme.json"
+
+[[contributes.themes]]
+path = "themes/one-dark-pro-darker.theme.json"
+editor-scheme = "themes/one-dark-pro-darker.scheme.json"
+
+[[contributes.themes]]
+path = "themes/one-dark-pro-mix.theme.json"
+editor-scheme = "themes/one-dark-pro-mix.scheme.json"
+
+[[contributes.themes]]
+path = "themes/one-dark-pro-night-flat.theme.json"
+editor-scheme = "themes/one-dark-pro-night-flat.scheme.json"

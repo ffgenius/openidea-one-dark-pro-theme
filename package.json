@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "pack": "node pack.mjs"
+  },
+  "dependencies": {
+    "@noble/hashes": "2.4.0",
+    "fflate": "0.8.3",
+    "smol-toml": "1.9.1"
+  }
+}

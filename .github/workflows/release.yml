@@ -1,0 +1,88 @@
+name: Release plugin
+
+on:
+  push:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: "${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && startsWith(github.event.head_commit.message, 'chore: release ') }}"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check release version
+        id: metadata
+        env:
+          RELEASE_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          import tomllib
+
+          with open('plugin.toml', 'rb') as file:
+              manifest = tomllib.load(file)
+          version = manifest['version']
+          plugin_id = manifest['id']
+          subject = os.environ['RELEASE_MESSAGE'].splitlines()[0]
+          if not re.fullmatch(r'\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?', version):
+              raise SystemExit(f'Invalid plugin version: {version}')
+          if not re.fullmatch(r'[a-z0-9][a-z0-9._-]*', plugin_id):
+              raise SystemExit(f'Invalid plugin ID: {plugin_id}')
+          if subject != f'chore: release {version}':
+              raise SystemExit(f'Commit subject must be: chore: release {version}')
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+              output.write(f'tag=v{version}\n')
+              output.write(f'package=dist/{plugin_id}-{version}.oiplugin\n')
+          PY
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install package dependencies
+        run: npm ci
+
+      - name: Install OpenIDEA plugin CLI
+        run: |
+          curl --fail --location --retry 3 \
+            https://github.com/l0ng-ai/openidea/releases/latest/download/openidea-plugin-linux-x86_64.gz \
+            --output "$RUNNER_TEMP/openidea-plugin.gz"
+          gzip -dc "$RUNNER_TEMP/openidea-plugin.gz" > "$RUNNER_TEMP/openidea-plugin"
+          chmod +x "$RUNNER_TEMP/openidea-plugin"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+
+      - name: Build package
+        env:
+          SIGNING_KEY: ${{ secrets.OPENIDEA_SIGNING_KEY }}
+          PUBLISHER: ${{ vars.OPENIDEA_PUBLISHER }}
+        run: |
+          if [[ -n "$SIGNING_KEY" || -n "$PUBLISHER" ]]; then
+            if [[ -z "$SIGNING_KEY" || -z "$PUBLISHER" ]]; then
+              echo 'Set both OPENIDEA_SIGNING_KEY and OPENIDEA_PUBLISHER to sign releases.' >&2
+              exit 1
+            fi
+            key="$RUNNER_TEMP/openidea-publisher.key"
+            printf '%s' "$SIGNING_KEY" > "$key"
+            chmod 600 "$key"
+            node pack.mjs --key "$key" --publisher "$PUBLISHER"
+          else
+            node pack.mjs
+          fi
+
+      - name: Validate package
+        env:
+          PACKAGE: ${{ steps.metadata.outputs.package }}
+        run: openidea-plugin check "$PACKAGE"
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.metadata.outputs.tag }}
+          PACKAGE: ${{ steps.metadata.outputs.package }}
+        run: |
+          gh release create "$TAG" "$PACKAGE" dist/SHA256SUMS \
+            --target "$GITHUB_SHA" --title "$TAG" --generate-notes
