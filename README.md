@@ -27,17 +27,13 @@ official CLI, get it from an OpenIDEA release or install it with Cargo:
 
 ```powershell
 cargo install --locked --git https://github.com/l0ng-ai/openidea ide-host --bin openidea-plugin
-openidea-plugin check .\dist\one-dark-pro-theme-0.0.1.oiplugin
+openidea-plugin check .\dist\ffgenius.one-dark-pro-theme-0.0.2.oiplugin
 ```
 
-For a signed community release, use a
-publisher-prefixed plugin ID such as `yourname.one-dark-pro`, set
-`categories = ["themes"]` in `plugin.toml`, and keep the private key outside the
-repository:
+For a signed community release, use the publisher key kept outside the repository:
 
 ```powershell
-openidea-plugin keygen ..\yourname.key
-node .\pack.mjs --key ..\yourname.key --publisher yourname
+node .\pack.mjs --key ..\ffgenius-openidea-publisher.key --publisher ffgenius
 ```
 
 Upload the signed `.oiplugin` to a versioned GitHub Release. The
@@ -48,16 +44,16 @@ lists its HTTPS download URL and SHA-256.
 
 Push a commit to the repository's default branch with the subject
 `chore: release <version>`, where `<version>` matches `plugin.toml` (for example,
-`chore: release 0.0.1`). GitHub Actions builds and validates the package, then
+`chore: release 0.0.2`). GitHub Actions builds and validates the package, then
 publishes it with `SHA256SUMS` under tag `v<version>`. Other commits do not
 trigger a release.
 
 For a signed release, set the repository secret `OPENIDEA_SIGNING_KEY` to the
-contents of the key file created by `openidea-plugin keygen`, and set the
+contents of the publisher key file, and set the
 repository variable `OPENIDEA_PUBLISHER` to its publisher ID. Both must be set;
 without them, the workflow creates an unsigned package for manual installation.
 The community registry requires a signed package and a matching plugin ID
-prefix, such as `yourname.one-dark-pro` for publisher `yourname`.
+prefix, such as `ffgenius.one-dark-pro-theme` for publisher `ffgenius`.
 
 ## Attribution
 
