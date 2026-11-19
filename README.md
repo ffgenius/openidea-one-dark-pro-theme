@@ -1,59 +1,13 @@
-# One Dark Pro for OpenIDEA
+<p align="center"><img src="icon.svg" alt="One Dark Pro logo" width="72"></p>
 
-An unofficial OpenIDEA port of Binaryify's One Dark Pro themes: One Dark Pro,
-Flat, Darker, Mix, and Night Flat. Based on upstream version 3.20.6 at commit
-`75c80ab18d90655e05ad837bb8d89f5e68d5ce53`.
+<h1 align="center">One Dark Pro for OpenIDEA</h1>
 
-## Install
+<p align="center">An unofficial OpenIDEA port of Binaryify's One Dark Pro, with five variants:<br>
+One Dark Pro, Flat, Darker, Mix, and Night Flat.</p>
 
-In OpenIDEA, choose **Settings > Plugins > Install Plugin from Package File**,
-select a `.oiplugin` from a GitHub Release or a local build, then apply a theme
-in the plugin's details. You can also use **Install Plugin from Disk** and select
-this repository's folder.
+![One Dark Pro in OpenIDEA](assets/one-dark-pro.png)
 
-## Build
-
-Requires Node.js 22+. The JavaScript packer runs on Windows without the
-`openidea-plugin` CLI:
-
-```powershell
-npm ci
-node .\pack.mjs
-```
-
-The package and its SHA-256 checksum are written to `dist/` as
-`<id>-<version>.oiplugin` and `SHA256SUMS`. To validate the package with the
-official CLI, get it from an OpenIDEA release or install it with Cargo:
-
-```powershell
-cargo install --locked --git https://github.com/l0ng-ai/openidea ide-host --bin openidea-plugin
-openidea-plugin check .\dist\ffgenius.one-dark-pro-theme-0.0.2.oiplugin
-```
-
-For a signed community release, use the publisher key kept outside the repository:
-
-```powershell
-node .\pack.mjs --key ..\ffgenius-openidea-publisher.key --publisher ffgenius
-```
-
-Upload the signed `.oiplugin` to a versioned GitHub Release. The
-[community plugin registry](https://github.com/l0ng-ai/openidea-plugins)
-lists its HTTPS download URL and SHA-256.
-
-## GitHub Release
-
-Push a commit to the repository's default branch with the subject
-`chore: release <version>`, where `<version>` matches `plugin.toml` (for example,
-`chore: release 0.0.2`). GitHub Actions builds and validates the package, then
-publishes it with `SHA256SUMS` under tag `v<version>`. Other commits do not
-trigger a release.
-
-For a signed release, set the repository secret `OPENIDEA_SIGNING_KEY` to the
-contents of the publisher key file, and set the
-repository variable `OPENIDEA_PUBLISHER` to its publisher ID. Both must be set;
-without them, the workflow creates an unsigned package for manual installation.
-The community registry requires a signed package and a matching plugin ID
-prefix, such as `ffgenius.one-dark-pro-theme` for publisher `ffgenius`.
+More previews: [Flat](assets/one-dark-pro-flat.png), [Darker](assets/one-dark-pro-darkerpng.png), [Mix](assets/one-dark-pro-mix.png), and [Night Flat](assets/one-dark-pro-night-flat.png).
 
 ## Attribution
 
