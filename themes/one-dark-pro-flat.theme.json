@@ -76,7 +76,7 @@
     "--fg-on-accent": "#ffffff",
     "--shadow-tooltip": "0 4px 12px #00000073",
     "--shadow-balloon": "0 8px 24px #00000080",
-    "--bg-frame": "#282c34",
+    "--bg-frame": "#21252b",
     "--bg-island": "#282c34",
     "--bg-stripe-hover": "#323842",
     "--bg-stripe-selected": "#2c313a",
