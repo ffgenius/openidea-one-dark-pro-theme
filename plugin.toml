@@ -1,6 +1,6 @@
 id = "ffgenius.one-dark-pro-theme"
 name = "One Dark Pro"
-version = "0.0.2"
+version = "0.0.3"
 description = "Unofficial OpenIDEA port of Binaryify's One Dark Pro theme."
 authors = ["ffgenius", "Binaryify"]
 license = "MIT"
